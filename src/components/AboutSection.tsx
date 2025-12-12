@@ -1,5 +1,6 @@
 import { Award, GraduationCap, Heart, Sparkles } from "lucide-react";
-import dentistImage from "../assets/dentist-portrait.jpg";
+import dentistImage from "@/assets/dentist-portrait.jpg";
+import useScrollAnimation from "../hooks/useScrollAnimation";
 
 const credentials = [
     {
@@ -25,26 +26,39 @@ const credentials = [
 ];
 
 const AboutSection = () => {
+    const { ref: imageRef, isVisible: imageVisible } = useScrollAnimation({ threshold: 0.2 });
+    const { ref: contentRef, isVisible: contentVisible } = useScrollAnimation({ threshold: 0.2 });
+    const { ref: credentialsRef, isVisible: credentialsVisible } = useScrollAnimation({ threshold: 0.2 });
+
     return (
-        <section id="sobre" className="section-padding bg-surface-secondary">
+        <section id="sobre" className="section-padding bg-surface-secondary overflow-hidden">
             <div className="container-wide">
                 <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
                     {/* Image */}
-                    <div className="relative opacity-0 animate-scale-in">
-                        <div className="aspect-[4/5] rounded-2xl overflow-hidden shadow-2xl">
+                    <div
+                        ref={imageRef}
+                        className={`relative scroll-animate-left ${imageVisible ? 'visible' : ''}`}
+                    >
+                        <div className="aspect-[4/5] rounded-2xl overflow-hidden shadow-2xl group">
                             <img
                                 src={dentistImage}
                                 alt="Dra. Ana Carolina - Dentista"
-                                className="w-full h-full object-cover"
+                                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                             />
                         </div>
                         {/* Decorative element */}
-                        <div className="absolute -bottom-6 -right-6 w-48 h-48 border-2 border-muted-foreground/20 rounded-2xl -z-10" />
+                        <div
+                            className={`absolute -bottom-6 -right-6 w-48 h-48 border-2 border-muted-foreground/20 rounded-2xl -z-10 transition-all duration-700 delay-300 ${imageVisible ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-4'
+                                }`}
+                        />
                     </div>
 
                     {/* Content */}
                     <div className="space-y-8">
-                        <div className="space-y-4 opacity-0 animate-fade-in-up">
+                        <div
+                            ref={contentRef}
+                            className={`space-y-4 scroll-animate-right ${contentVisible ? 'visible' : ''}`}
+                        >
                             <p className="text-sm font-medium tracking-widest uppercase text-muted-foreground">
                                 Conheça a Especialista
                             </p>
@@ -63,13 +77,16 @@ const AboutSection = () => {
                         </div>
 
                         {/* Credentials Grid */}
-                        <div className="grid grid-cols-2 gap-4 opacity-0 animate-fade-in-up animation-delay-200">
+                        <div
+                            ref={credentialsRef}
+                            className={`grid grid-cols-2 gap-4 stagger-children ${credentialsVisible ? 'visible' : ''}`}
+                        >
                             {credentials.map((item, index) => (
                                 <div
                                     key={index}
-                                    className="p-4 rounded-xl bg-background border border-border hover:shadow-md transition-shadow duration-300"
+                                    className="p-4 rounded-xl bg-background border border-border hover-lift hover-glow cursor-default"
                                 >
-                                    <item.icon className="w-6 h-6 text-foreground mb-3" strokeWidth={1.5} />
+                                    <item.icon className="w-6 h-6 text-foreground mb-3 transition-transform duration-300 group-hover:scale-110" strokeWidth={1.5} />
                                     <h3 className="font-medium text-foreground text-sm">{item.title}</h3>
                                     <p className="text-xs text-muted-foreground mt-1">{item.description}</p>
                                 </div>

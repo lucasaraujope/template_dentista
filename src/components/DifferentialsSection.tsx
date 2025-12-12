@@ -1,4 +1,5 @@
 import { Heart, Cpu, ShieldCheck, Sparkles } from "lucide-react";
+import useScrollAnimation from "../hooks/useScrollAnimation";
 
 const differentials = [
     {
@@ -24,11 +25,17 @@ const differentials = [
 ];
 
 const DifferentialsSection = () => {
+    const { ref: headerRef, isVisible: headerVisible } = useScrollAnimation({ threshold: 0.3 });
+    const { ref: gridRef, isVisible: gridVisible } = useScrollAnimation({ threshold: 0.1 });
+
     return (
-        <section id="diferenciais" className="section-padding bg-surface-secondary">
+        <section id="diferenciais" className="section-padding bg-surface-secondary overflow-hidden">
             <div className="container-wide">
                 {/* Header */}
-                <div className="text-center max-w-2xl mx-auto mb-16 space-y-4 opacity-0 animate-fade-in-up">
+                <div
+                    ref={headerRef}
+                    className={`text-center max-w-2xl mx-auto mb-16 space-y-4 scroll-animate ${headerVisible ? 'visible' : ''}`}
+                >
                     <p className="text-sm font-medium tracking-widest uppercase text-muted-foreground">
                         Por que nos escolher
                     </p>
@@ -38,16 +45,17 @@ const DifferentialsSection = () => {
                 </div>
 
                 {/* Differentials Grid */}
-                <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div
+                    ref={gridRef}
+                    className={`grid sm:grid-cols-2 lg:grid-cols-4 gap-6 stagger-children ${gridVisible ? 'visible' : ''}`}
+                >
                     {differentials.map((item, index) => (
                         <div
                             key={index}
-                            className={`text-center p-8 rounded-2xl bg-background border border-border 
-                hover:shadow-lg transition-all duration-300 opacity-0 animate-fade-in-up`}
-                            style={{ animationDelay: `${index * 100 + 200}ms` }}
+                            className="group text-center p-8 rounded-2xl bg-background border border-border hover-lift cursor-default"
                         >
-                            <div className="w-16 h-16 rounded-full bg-surface-tertiary flex items-center justify-center mx-auto mb-6">
-                                <item.icon className="w-7 h-7 text-foreground" strokeWidth={1.5} />
+                            <div className="w-16 h-16 rounded-full bg-surface-tertiary flex items-center justify-center mx-auto mb-6 transition-all duration-500 group-hover:bg-foreground/10 group-hover:scale-110">
+                                <item.icon className="w-7 h-7 text-foreground transition-all duration-500 group-hover:scale-110" strokeWidth={1.5} />
                             </div>
                             <h3 className="text-lg font-display font-semibold text-foreground mb-3">
                                 {item.title}
